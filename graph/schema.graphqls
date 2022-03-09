@@ -1,0 +1,34 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Enterprise {
+  id: ID!
+  name: String
+  description: String
+}
+
+type Application {
+  id: ID!
+  name: String
+}
+
+type Site {
+  id: ID!
+  name: String
+}
+
+type Device {
+  id: ID!
+  name: String
+  simCard: ID
+}
+
+type SimCard {
+  id: ID!
+  name: String
+}
+
+type Query {
+  enterprises: [Enterprise!]!
+}
