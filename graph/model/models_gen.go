@@ -14,9 +14,11 @@ type Device struct {
 }
 
 type Enterprise struct {
-	ID          string  `json:"id"`
-	Name        *string `json:"name"`
-	Description *string `json:"description"`
+	ID           string         `json:"id"`
+	Name         *string        `json:"name"`
+	Description  *string        `json:"description"`
+	Applications []*Application `json:"applications"`
+	Sites        []*Site        `json:"sites"`
 }
 
 type SimCard struct {
@@ -25,6 +27,8 @@ type SimCard struct {
 }
 
 type Site struct {
-	ID   string  `json:"id"`
-	Name *string `json:"name"`
+	ID       string     `json:"id"`
+	Name     *string    `json:"name"`
+	Devices  []*Device  `json:"devices"`
+	SimCards []*SimCard `json:"simCards"`
 }

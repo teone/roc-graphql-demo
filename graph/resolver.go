@@ -2,6 +2,7 @@ package graph
 
 import (
 	externalRef0 "github.com/onosproject/aether-roc-api/pkg/aether_2_0_0/types"
+	"github.com/onosproject/onos-lib-go/pkg/logging"
 	"github.com/openconfig/gnmi/proto/gnmi"
 )
 
@@ -10,6 +11,8 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 //go:generate go run github.com/99designs/gqlgen generate
+
+var log = logging.GetLogger("resolvers")
 
 type Resolver struct {
 	client     gnmi.GNMIClient

@@ -6,6 +6,8 @@ type Enterprise {
   id: ID!
   name: String
   description: String
+  applications: [Application!]!
+  sites: [Site!]!
 }
 
 type Application {
@@ -16,6 +18,8 @@ type Application {
 type Site {
   id: ID!
   name: String
+  devices: [Device!]!
+  simCards: [SimCard!]!
 }
 
 type Device {
@@ -31,4 +35,6 @@ type SimCard {
 
 type Query {
   enterprises: [Enterprise!]!
+  site: [Site!]!
+  simCards: [SimCard!]!
 }

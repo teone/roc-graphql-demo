@@ -54,13 +54,17 @@ type ComplexityRoot struct {
 	}
 
 	Enterprise struct {
-		Description func(childComplexity int) int
-		ID          func(childComplexity int) int
-		Name        func(childComplexity int) int
+		Applications func(childComplexity int) int
+		Description  func(childComplexity int) int
+		ID           func(childComplexity int) int
+		Name         func(childComplexity int) int
+		Sites        func(childComplexity int) int
 	}
 
 	Query struct {
 		Enterprises func(childComplexity int) int
+		SimCards    func(childComplexity int) int
+		Site        func(childComplexity int) int
 	}
 
 	SimCard struct {
@@ -69,13 +73,17 @@ type ComplexityRoot struct {
 	}
 
 	Site struct {
-		ID   func(childComplexity int) int
-		Name func(childComplexity int) int
+		Devices  func(childComplexity int) int
+		ID       func(childComplexity int) int
+		Name     func(childComplexity int) int
+		SimCards func(childComplexity int) int
 	}
 }
 
 type QueryResolver interface {
 	Enterprises(ctx context.Context) ([]*model.Enterprise, error)
+	Site(ctx context.Context) ([]*model.Site, error)
+	SimCards(ctx context.Context) ([]*model.SimCard, error)
 }
 
 type executableSchema struct {
@@ -128,6 +136,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Device.SimCard(childComplexity), true
 
+	case "Enterprise.applications":
+		if e.complexity.Enterprise.Applications == nil {
+			break
+		}
+
+		return e.complexity.Enterprise.Applications(childComplexity), true
+
 	case "Enterprise.description":
 		if e.complexity.Enterprise.Description == nil {
 			break
@@ -149,12 +164,33 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Enterprise.Name(childComplexity), true
 
+	case "Enterprise.sites":
+		if e.complexity.Enterprise.Sites == nil {
+			break
+		}
+
+		return e.complexity.Enterprise.Sites(childComplexity), true
+
 	case "Query.enterprises":
 		if e.complexity.Query.Enterprises == nil {
 			break
 		}
 
 		return e.complexity.Query.Enterprises(childComplexity), true
+
+	case "Query.simCards":
+		if e.complexity.Query.SimCards == nil {
+			break
+		}
+
+		return e.complexity.Query.SimCards(childComplexity), true
+
+	case "Query.site":
+		if e.complexity.Query.Site == nil {
+			break
+		}
+
+		return e.complexity.Query.Site(childComplexity), true
 
 	case "SimCard.id":
 		if e.complexity.SimCard.ID == nil {
@@ -170,6 +206,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.SimCard.Name(childComplexity), true
 
+	case "Site.devices":
+		if e.complexity.Site.Devices == nil {
+			break
+		}
+
+		return e.complexity.Site.Devices(childComplexity), true
+
 	case "Site.id":
 		if e.complexity.Site.ID == nil {
 			break
@@ -183,6 +226,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Site.Name(childComplexity), true
+
+	case "Site.simCards":
+		if e.complexity.Site.SimCards == nil {
+			break
+		}
+
+		return e.complexity.Site.SimCards(childComplexity), true
 
 	}
 	return 0, false
@@ -242,6 +292,8 @@ type Enterprise {
   id: ID!
   name: String
   description: String
+  applications: [Application!]!
+  sites: [Site!]!
 }
 
 type Application {
@@ -252,6 +304,8 @@ type Application {
 type Site {
   id: ID!
   name: String
+  devices: [Device!]!
+  simCards: [SimCard!]!
 }
 
 type Device {
@@ -267,6 +321,8 @@ type SimCard {
 
 type Query {
   enterprises: [Enterprise!]!
+  site: [Site!]!
+  simCards: [SimCard!]!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -593,6 +649,76 @@ func (ec *executionContext) _Enterprise_description(ctx context.Context, field g
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Enterprise_applications(ctx context.Context, field graphql.CollectedField, obj *model.Enterprise) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Enterprise",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Applications, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Application)
+	fc.Result = res
+	return ec.marshalNApplication2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐApplicationᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Enterprise_sites(ctx context.Context, field graphql.CollectedField, obj *model.Enterprise) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Enterprise",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Sites, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Site)
+	fc.Result = res
+	return ec.marshalNSite2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSiteᚄ(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_enterprises(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -626,6 +752,76 @@ func (ec *executionContext) _Query_enterprises(ctx context.Context, field graphq
 	res := resTmp.([]*model.Enterprise)
 	fc.Result = res
 	return ec.marshalNEnterprise2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐEnterpriseᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_site(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Site(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Site)
+	fc.Result = res
+	return ec.marshalNSite2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSiteᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_simCards(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().SimCards(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.SimCard)
+	fc.Result = res
+	return ec.marshalNSimCard2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSimCardᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -831,6 +1027,76 @@ func (ec *executionContext) _Site_name(ctx context.Context, field graphql.Collec
 	res := resTmp.(*string)
 	fc.Result = res
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Site_devices(ctx context.Context, field graphql.CollectedField, obj *model.Site) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Site",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Devices, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Device)
+	fc.Result = res
+	return ec.marshalNDevice2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐDeviceᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Site_simCards(ctx context.Context, field graphql.CollectedField, obj *model.Site) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Site",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SimCards, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.SimCard)
+	fc.Result = res
+	return ec.marshalNSimCard2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSimCardᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -2144,6 +2410,26 @@ func (ec *executionContext) _Enterprise(ctx context.Context, sel ast.SelectionSe
 
 			out.Values[i] = innerFunc(ctx)
 
+		case "applications":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Enterprise_applications(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "sites":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Enterprise_sites(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2184,6 +2470,52 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_enterprises(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "site":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_site(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "simCards":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_simCards(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -2287,6 +2619,26 @@ func (ec *executionContext) _Site(ctx context.Context, sel ast.SelectionSet, obj
 
 			out.Values[i] = innerFunc(ctx)
 
+		case "devices":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Site_devices(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "simCards":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Site_simCards(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2721,6 +3073,60 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
+func (ec *executionContext) marshalNApplication2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐApplicationᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Application) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNApplication2ᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐApplication(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNApplication2ᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐApplication(ctx context.Context, sel ast.SelectionSet, v *model.Application) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Application(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -2734,6 +3140,60 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNDevice2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐDeviceᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Device) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNDevice2ᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐDevice(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNDevice2ᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐDevice(ctx context.Context, sel ast.SelectionSet, v *model.Device) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Device(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNEnterprise2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐEnterpriseᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Enterprise) graphql.Marshaler {
@@ -2803,6 +3263,114 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNSimCard2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSimCardᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.SimCard) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNSimCard2ᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSimCard(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNSimCard2ᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSimCard(ctx context.Context, sel ast.SelectionSet, v *model.SimCard) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._SimCard(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNSite2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSiteᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Site) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNSite2ᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSite(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNSite2ᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSite(ctx context.Context, sel ast.SelectionSet, v *model.Site) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Site(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
