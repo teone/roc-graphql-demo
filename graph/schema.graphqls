@@ -15,11 +15,20 @@ type Application {
   name: String
 }
 
+type Slices {
+  id: ID!
+  name: String
+}
+
 type Site {
   id: ID!
   name: String
   devices: [Device!]!
   simCards: [SimCard!]!
+  simCardsCount: Int!
+  alerts: Int
+  image: String
+  slices: [Slices!]!
 }
 
 type Device {

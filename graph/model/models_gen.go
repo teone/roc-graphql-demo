@@ -27,8 +27,17 @@ type SimCard struct {
 }
 
 type Site struct {
-	ID       string     `json:"id"`
-	Name     *string    `json:"name"`
-	Devices  []*Device  `json:"devices"`
-	SimCards []*SimCard `json:"simCards"`
+	ID            string     `json:"id"`
+	Name          *string    `json:"name"`
+	Devices       []*Device  `json:"devices"`
+	SimCards      []*SimCard `json:"simCards"`
+	SimCardsCount int        `json:"simCardsCount"`
+	Alerts        *int       `json:"alerts"`
+	Image         *string    `json:"image"`
+	Slices        []*Slices  `json:"slices"`
+}
+
+type Slices struct {
+	ID   string  `json:"id"`
+	Name *string `json:"name"`
 }

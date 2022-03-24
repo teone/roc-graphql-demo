@@ -73,10 +73,19 @@ type ComplexityRoot struct {
 	}
 
 	Site struct {
-		Devices  func(childComplexity int) int
-		ID       func(childComplexity int) int
-		Name     func(childComplexity int) int
-		SimCards func(childComplexity int) int
+		Alerts        func(childComplexity int) int
+		Devices       func(childComplexity int) int
+		ID            func(childComplexity int) int
+		Image         func(childComplexity int) int
+		Name          func(childComplexity int) int
+		SimCards      func(childComplexity int) int
+		SimCardsCount func(childComplexity int) int
+		Slices        func(childComplexity int) int
+	}
+
+	Slices struct {
+		ID   func(childComplexity int) int
+		Name func(childComplexity int) int
 	}
 }
 
@@ -206,6 +215,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.SimCard.Name(childComplexity), true
 
+	case "Site.alerts":
+		if e.complexity.Site.Alerts == nil {
+			break
+		}
+
+		return e.complexity.Site.Alerts(childComplexity), true
+
 	case "Site.devices":
 		if e.complexity.Site.Devices == nil {
 			break
@@ -220,6 +236,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Site.ID(childComplexity), true
 
+	case "Site.image":
+		if e.complexity.Site.Image == nil {
+			break
+		}
+
+		return e.complexity.Site.Image(childComplexity), true
+
 	case "Site.name":
 		if e.complexity.Site.Name == nil {
 			break
@@ -233,6 +256,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Site.SimCards(childComplexity), true
+
+	case "Site.simCardsCount":
+		if e.complexity.Site.SimCardsCount == nil {
+			break
+		}
+
+		return e.complexity.Site.SimCardsCount(childComplexity), true
+
+	case "Site.slices":
+		if e.complexity.Site.Slices == nil {
+			break
+		}
+
+		return e.complexity.Site.Slices(childComplexity), true
+
+	case "Slices.id":
+		if e.complexity.Slices.ID == nil {
+			break
+		}
+
+		return e.complexity.Slices.ID(childComplexity), true
+
+	case "Slices.name":
+		if e.complexity.Slices.Name == nil {
+			break
+		}
+
+		return e.complexity.Slices.Name(childComplexity), true
 
 	}
 	return 0, false
@@ -301,11 +352,20 @@ type Application {
   name: String
 }
 
+type Slices {
+  id: ID!
+  name: String
+}
+
 type Site {
   id: ID!
   name: String
   devices: [Device!]!
   simCards: [SimCard!]!
+  simCardsCount: Int!
+  alerts: Int
+  image: String
+  slices: [Slices!]!
 }
 
 type Device {
@@ -1097,6 +1157,207 @@ func (ec *executionContext) _Site_simCards(ctx context.Context, field graphql.Co
 	res := resTmp.([]*model.SimCard)
 	fc.Result = res
 	return ec.marshalNSimCard2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSimCardᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Site_simCardsCount(ctx context.Context, field graphql.CollectedField, obj *model.Site) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Site",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SimCardsCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Site_alerts(ctx context.Context, field graphql.CollectedField, obj *model.Site) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Site",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Alerts, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Site_image(ctx context.Context, field graphql.CollectedField, obj *model.Site) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Site",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Image, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Site_slices(ctx context.Context, field graphql.CollectedField, obj *model.Site) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Site",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Slices, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Slices)
+	fc.Result = res
+	return ec.marshalNSlices2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSlicesᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Slices_id(ctx context.Context, field graphql.CollectedField, obj *model.Slices) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Slices",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Slices_name(ctx context.Context, field graphql.CollectedField, obj *model.Slices) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Slices",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -2639,6 +2900,78 @@ func (ec *executionContext) _Site(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "simCardsCount":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Site_simCardsCount(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "alerts":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Site_alerts(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "image":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Site_image(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+		case "slices":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Site_slices(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var slicesImplementors = []string{"Slices"}
+
+func (ec *executionContext) _Slices(ctx context.Context, sel ast.SelectionSet, obj *model.Slices) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, slicesImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Slices")
+		case "id":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Slices_id(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "name":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Slices_name(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3265,6 +3598,21 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
+	res, err := graphql.UnmarshalInt(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalInt(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) marshalNSimCard2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSimCardᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.SimCard) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -3371,6 +3719,60 @@ func (ec *executionContext) marshalNSite2ᚖgithubᚗcomᚋteoneᚋrocᚑgraphql
 		return graphql.Null
 	}
 	return ec._Site(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNSlices2ᚕᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSlicesᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Slices) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNSlices2ᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSlices(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNSlices2ᚖgithubᚗcomᚋteoneᚋrocᚑgraphqlᚑdemoᚋgraphᚋmodelᚐSlices(ctx context.Context, sel ast.SelectionSet, v *model.Slices) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Slices(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -3680,6 +4082,22 @@ func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.Se
 		return graphql.Null
 	}
 	res := graphql.MarshalID(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalInt(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalInt(*v)
 	return res
 }
 

@@ -8,6 +8,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/go-chi/chi"
+	"github.com/rs/cors"
 	"github.com/teone/roc-graphql-demo/graph"
 	"github.com/teone/roc-graphql-demo/graph/generated"
 )
@@ -33,11 +35,22 @@ func main() {
 	if err != nil {
 		log.Fatalw("cannot-create-resolver", "err", err)
 	}
+
+	router := chi.NewRouter()
+	// Add CORS middleware around every request
+	// See https://github.com/rs/cors for full option listing
+	router.Use(cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000", "*"},
+		AllowCredentials: true,
+		Debug:            true,
+		AllowedMethods: []string{"POST", "GET"},
+	}).Handler)
+
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	router.Handle("/query", srv)
 
 	log.Infof("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }

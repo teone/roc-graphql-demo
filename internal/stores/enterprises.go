@@ -65,11 +65,28 @@ func ListEnterprises(ctx context.Context, client gnmi.GNMIClient, target externa
 func ListSites(enterprise types.EnterprisesEnterprise) ([]*model.Site) {
 	sites := []*model.Site{}
 	for _, rs := range *enterprise.Site {
+
+		alerts := 0
+		switch rs.SiteId {
+		case "acme-chicago":
+			alerts = 2
+		case "starbucks-seattle":
+			alerts = 3
+			
+		}
+
+		image := "https://chronos-dev.onlab.us/chronos-exporter/images/berlin-deutschland.png"
+		
+		simCards := ListSimCard(rs)
 		s := &model.Site{
 			ID:       rs.SiteId,
 			Name:     rs.DisplayName,
 			Devices:  ListDevice(rs),
-			SimCards: ListSimCard(rs),
+			SimCards: simCards,
+			SimCardsCount: len(simCards),
+			Alerts: &alerts,
+			Image: &image,
+			Slices: ListSlices(rs),
 		}
 		sites = append(sites, s)
 	}
@@ -100,4 +117,16 @@ func ListSimCard(site types.EnterprisesEnterpriseSite) ([]*model.SimCard) {
 		simCards = append(simCards, d)
 	}
 	return simCards
+}
+
+func ListSlices(site types.EnterprisesEnterpriseSite) ([]*model.Slices) {
+	slices := []*model.Slices{}
+	for _, slice := range *site.Slice {
+		d := &model.Slices{
+			ID:   slice.SliceId,
+			Name: slice.DisplayName,
+		}
+		slices = append(slices, d)
+	}
+	return slices
 }
